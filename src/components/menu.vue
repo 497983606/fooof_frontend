@@ -22,6 +22,10 @@
       <div class="list">
         <p v-for="i in state.data.data">
           {{  i.url }}
+          <span class="btns">
+            <i class="iconfont icon-delete" @click="delete"></i>
+            <i class="iconfont icon-highlighter" @click="edit(i)"></i>
+          </span>
         </p>
       </div>
     </n-spin>
@@ -87,7 +91,16 @@ watch(() => state.page, () => {
       padding: 10px 0;
       cursor: pointer;
       border-bottom: 1px solid #eee; 
-      text-indent: 10px;
+      position: relative;
+      .btns{
+        position: absolute;
+        right: 0;
+        i.iconfont{
+          padding: 5px;
+          background-color: #eee;
+          margin-left: 10px;
+        }
+      }
     }
   }
   ._footer{
