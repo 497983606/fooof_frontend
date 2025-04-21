@@ -2,34 +2,51 @@
   <div class="header">
     <span class="logo">
       <img src="../assets/img/fooof.svg" />
-      See China
     </span>
     <span class="user">
       <n-button size="small" style="margin-right: 10px"  @click="menu"> <i class="iconfont icon-shitujuzhen"></i></n-button>
       <n-button size="small" @click="manger"> <i class="iconfont icon-shezhi"></i></n-button>
     </span>
   </div>
+
+  <n-model >
+
+  </n-model>
+
 </template>
 
 <script>
 import { defineComponent, reactive, ref, watch } from 'vue'
 import router from '@/router/index.js'
-import {  } from '@/service/api'
+import request from '@/service/'
 export default defineComponent({
   name: 'Header',
   setup(){
+    const state = reactive({
+      menu: [  ]
+    })
     const manger = () => {
       router.push('/admin')
     }
-
+    const menu = () => {
+      
+    }
     const logout = () => {
       localStorage.clear()
       location.reload()
     }
 
+    const getData = async () => {
+      const res = await request.get({})
+      state.menu = res.data
+    }
+
+    getData()
+
     return {
       manger,
-      logout
+      logout,
+      menu
     }
   }
 })

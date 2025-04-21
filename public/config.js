@@ -1,3 +1,3 @@
 window.sys_con = {
-  baseURL: 'http://zkqh.kmdns.net:5030/',
+  baseURL: 'http://nas.taiwu.tech:7000/api/',
 }

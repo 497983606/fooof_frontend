@@ -31,19 +31,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       https: false,
-      prot: 8088,
-      proxy: {
-        '/web-api': {
-          target: 'http://zkqh.kmdns.net:0000',
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/web-api/, '')
-        },
-        '/file_remote': {
-          target: 'http://zkqh.kmdns.net:0000/',
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/file_remote/, '')
-        }
-      }
+      prot: 8088
     }
   }
 })

@@ -1,16 +1,18 @@
 <template>
 <Header />
 <main class="main">
-    <router-view></router-view>
+    <Scene />
 </main>
 </template>
 
 <script>
 import { reactive, toRefs, defineComponent } from 'vue'
+import Scene from '@/components/scene.vue';
 import Header from '@/components/header.vue';
 export default defineComponent({
     components:{
-        Header
+        Header,
+        Scene
     },
 
     setup(){
