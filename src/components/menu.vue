@@ -1,72 +1,76 @@
 <template>
   <div class="menu">
-    <div class="_header">
-      <n-cascader
-        v-model:value="state.city"
-        :options="state.options"
-        check-strategy="all"
-        placeholder="Please Select city"
-        size="small"
-      />
-      <n-select
-        v-if="state.data.totalPages"
-        v-model:value="state.page"
-        size="small"
-        style="margin-left: 10px; width: 220px"
-        placeholder="Page Number"
-        :options="state.pages"
-      >
-      </n-select>
-    </div>
-    <div class="list">
-      
-    </div>
-    <div class="_footer">
-      <n-button @click="close">cancel</n-button>
-      <n-button type="primary" @click="getData()">ok</n-button>
-    </div>
+    <n-spin :show="state.loading">
+      <div class="_header">
+        <n-cascader
+          v-model:value="state.city"
+          :options="state.options"
+          check-strategy="all"
+          placeholder="Please Select city"
+        />
+        <n-select
+          v-model:value="state.page"
+          style="margin-left: 10px; width: 100px"
+          placeholder="Page"
+          :options="state.pages"
+        >
+        </n-select>
+        <n-button style="margin-left: 10px;">
+          <i class="iconfont icon-add"></i>
+        </n-button>
+      </div>
+      <div class="list">
+        <p v-for="i in state.data.data">
+          {{  i.url }}
+        </p>
+      </div>
+    </n-spin>
   </div>
 </template>
 
 <script setup>
 import request from '@/service/'
-import { reactive } from 'vue'
+import { defineEmits } from 'vue'
+import { reactive, watch } from 'vue'
+import { pcTextArr } from "element-china-area-data";
 const state = reactive({
   data: {},
-  options: [],
+  options: [{ label: 'All', value: 'All' }, ...pcTextArr],
   page: 1,
-  city: [],
-  pages: []
+  city: 'All',
+  pages: [],
+  loading: false
 })
 const emit = defineEmits(['close'])
 const close = () => emit('close')
+
 const getData = async () => {
-  state.options = [ { label: "all", value: "all" } ]
+  state.loading = true
   const city = Array.isArray(state.city) ? state.city.join(',') : state.city
-  const res = await request.get({ searchField:'location', searchValue: city, page: state.page })
+  const params = { searchField:'location', searchValue: city, page: state.page }
+  if( city === 'All' ) {
+    delete params.searchField
+    delete params.searchValue
+  }
+  const res = await request.get(params)
   state.data = res
-  state.pages = new Array(res.totalPages).fill(2).map( (_i, i) => ({ label: 'Page ' + (i+1), value: i+1 }))
-  res.data.forEach(item => {
-    let location = item.location.split(',')
-    let parent = state.options.find(i => i.label === location[0])
-    let children = {
-      label: location[1],
-      value: location[1]
-    }
-    if (!parent) {
-      parent = {
-        label: location[0],
-        value: location[0],
-        children: [children]
-      }
-      state.options.push(parent)
-    } else {
-      if ( !parent.children.find(  i => i.label === location[1]) ) parent.children.push(children)
-    }
-  })
+  res.totalPages = res.totalPages > 1 ? res.totalPages : 1
+  state.pages = new Array(res.totalPages).fill(2).map( (_i, i) => ({ label: (i+1), value: i+1 }))
+  state.loading = false
 }
 
-getData()
+const ok = () => {
+  
+}
+
+watch(() => state.city, () => {
+  state.page = 1
+  getData()
+})
+
+watch(() => state.page, () => {
+  getData()
+}, { immediate: true })
 
 </script>
 

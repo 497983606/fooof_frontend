@@ -17,15 +17,5 @@ export default [
     component: () => import('@/views/index.vue'),
     children: [
     ]
-  },{
-    path: '/admin',
-    name: 'admin',
-    meta: {
-      title: "admin",
-      auth: true
-    },
-    component: () => import('@/views/admin.vue'),
-    children: [
-    ]
   }
 ]

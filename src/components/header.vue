@@ -4,8 +4,10 @@
       <img src="../assets/img/fooof.svg" />
     </span>
     <span class="user">
-      <n-button size="small" style="margin-right: 10px"  @click="menu = true"> <i class="iconfont icon-shitujuzhen"></i></n-button>
-      <n-button size="small" @click="manger"> <i class="iconfont icon-shezhi"></i></n-button>
+      <n-button size="small" @click="menu = true"> 
+        <i class="iconfont icon-shitujuzhen"></i>
+        Menu
+      </n-button>
     </span>
   </div>
 
@@ -32,17 +34,11 @@ export default defineComponent({
   components: { Menu },
   setup(){
     const menu = ref(false)
-    const manger = () => {
-      router.push('/admin')
-    }
     const logout = () => {
       localStorage.clear()
       location.reload()
     }
-    
-
     return {
-      manger,
       logout,
       menu
     }
