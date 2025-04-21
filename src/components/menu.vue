@@ -75,21 +75,31 @@ watch(() => state.page, () => {
 </script>
 
 <style lang="less">
-._header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-._footer{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 10px;
-  .n-button{
-    margin-left: 10px;
-    min-width: 100px;
-    margin-top: 20px;
+.menu{
+  ._header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .list{
+    p{
+      padding: 10px 0;
+      cursor: pointer;
+      border-bottom: 1px solid #eee; 
+      text-indent: 10px;
+    }
+  }
+  ._footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    .n-button{
+      margin-left: 10px;
+      min-width: 100px;
+      margin-top: 20px;
+    }
   }
 }
 </style>
