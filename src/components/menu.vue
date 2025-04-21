@@ -23,7 +23,7 @@
         <p v-for="i in state.data.data">
           {{  i.url }}
           <span class="btns">
-            <i class="iconfont icon-delete" @click="delete"></i>
+            <i class="iconfont icon-delete" @click="del(i)"></i>
             <i class="iconfont icon-highlighter" @click="edit(i)"></i>
           </span>
         </p>
@@ -34,8 +34,7 @@
 
 <script setup>
 import request from '@/service/'
-import { defineEmits } from 'vue'
-import { reactive, watch } from 'vue'
+import { reactive, watch, defineEmits} from 'vue'
 import { pcTextArr } from "element-china-area-data";
 const state = reactive({
   data: {},
@@ -61,6 +60,22 @@ const getData = async () => {
   res.totalPages = res.totalPages > 1 ? res.totalPages : 1
   state.pages = new Array(res.totalPages).fill(2).map( (_i, i) => ({ label: (i+1), value: i+1 }))
   state.loading = false
+}
+
+const del = (i) => {
+  $dialog.warning({
+      title: '警告',
+      content: 'Are you sure you want to delete？',
+      positiveText: 'ok',
+      negativeText: 'not',
+      draggable: true,
+      onPositiveClick: async () => {
+        state.loading = true
+        await request.delete(i.uuid)
+        getData()
+        state.loading = false
+      }
+    })
 }
 
 const ok = () => {

@@ -27,12 +27,14 @@ instance.interceptors.response.use((response) => {
     if (typeof res === 'string') res = res.replace('NaN', null)
     else res = response.data
   }
+  if(res.error) $message.error(res.error)
+
   return res
 }, error => {
   // 错误返回
   let msg = error.response.data.error
-  console.log(msg || '请求异常');
-  return Promise.reject(error.response)
+  $message.error(msg)
+  return error.response
 })
 
 export default {
@@ -46,5 +48,5 @@ export default {
   post: data => instance.post('/data', data ),
   login: data => instance.login('/login', data ),
   edit: data => instance.update('/data', data ),
-  delete: data => instance.delete('/data', data )
+  delete: id => instance.delete('/data/' + id )
 }
