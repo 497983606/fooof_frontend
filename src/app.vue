@@ -1,7 +1,5 @@
 <template>
-  <n-config-provider 
-    :theme-overrides="commonStyle"
-  >
+  <n-config-provider  :theme-overrides="commonStyle" >
     <n-dialog-provider>
       <n-message-provider>
         <router-view></router-view>
@@ -19,9 +17,6 @@ export default defineComponent({
     window.$dialog = dialog
     window.$message = message
     window.$notification = notification
-    window.$store = reactive({
-      
-    })
     
     return {
       commonStyle: {

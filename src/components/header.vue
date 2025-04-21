@@ -4,44 +4,42 @@
       <img src="../assets/img/fooof.svg" />
     </span>
     <span class="user">
-      <n-button size="small" style="margin-right: 10px"  @click="menu"> <i class="iconfont icon-shitujuzhen"></i></n-button>
+      <n-button size="small" style="margin-right: 10px"  @click="menu = true"> <i class="iconfont icon-shitujuzhen"></i></n-button>
       <n-button size="small" @click="manger"> <i class="iconfont icon-shezhi"></i></n-button>
     </span>
   </div>
 
-  <n-model >
-
-  </n-model>
+  <n-modal
+  v-model:show="menu"
+  style="width: 100%; max-width: 400px"
+  preset="card"
+  title="Menu"
+  size="small"
+  :bordered="false"
+  >
+    <Menu @close="menu = false"/>
+  </n-modal>
 
 </template>
 
 <script>
-import { defineComponent, reactive, ref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import router from '@/router/index.js'
-import request from '@/service/'
+import Menu from './menu.vue'
+
 export default defineComponent({
   name: 'Header',
+  components: { Menu },
   setup(){
-    const state = reactive({
-      menu: [  ]
-    })
+    const menu = ref(false)
     const manger = () => {
       router.push('/admin')
-    }
-    const menu = () => {
-      
     }
     const logout = () => {
       localStorage.clear()
       location.reload()
     }
-
-    const getData = async () => {
-      const res = await request.get({})
-      state.menu = res.data
-    }
-
-    getData()
+    
 
     return {
       manger,

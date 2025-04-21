@@ -9,7 +9,6 @@ const instance = axios.create({
 
 // 增加请求拦截器
 instance.interceptors.request.use((config) => {
-  debugger
   const token = localStorage.getItem('token')
   if (token) {
     config.headers.token = JSON.parse(token)?.token
@@ -37,7 +36,13 @@ instance.interceptors.response.use((response) => {
 })
 
 export default {
-  get: params => instance.get('/data', params ),
+  get: params => {
+    let query = ""
+    for (let key in params) {
+      if(params[key]) query += `${key}=${params[key]}&`
+    }
+    return instance.get('/data?' + query)
+  },
   post: data => instance.post('/data', data ),
   login: data => instance.login('/login', data ),
   edit: data => instance.update('/data', data ),
