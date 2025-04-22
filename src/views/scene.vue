@@ -65,6 +65,8 @@ const getData = async (params) => {
     state.info = Array.isArray(res.data) ? res.data[0] : res.data
     state.info.info = JSON.parse(state.info.info)
     state.info.info.date = dateFormat( 'YYYY-mm-dd', new Date(state.info.info.date))
+    state.uuid = state.info.uuid
+    router.replace({ query: { uuid: state.info.uuid } })
     initScene()
   } 
 }
@@ -100,6 +102,7 @@ const initScene = () => {
   })
   scene.load( state.info.url )
   scene.controlChange = debounce((e) => {
+    if(!route.query.uuid) return
     const query = { 
     ...route.query,
       camera: e.camera.join(','),
