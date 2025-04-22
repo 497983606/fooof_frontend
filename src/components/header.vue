@@ -4,10 +4,9 @@
       <img src="../assets/img/fooof.svg" />
     </span>
     <span class="user">
-      <n-button size="small" @click="menu = true"> 
-        <i class="iconfont icon-shitujuzhen"></i>
-        Menu
-      </n-button>
+      <n-button size="small" style="margin-right: 10px"  @click="menu = true"> <i class="iconfont icon-shitujuzhen"></i></n-button>
+      <n-button size="small" v-if="hasToken" @click="logout"> <i class="iconfont icon-close"></i></n-button>
+      <n-button size="small" v-else @click="login"> <i class="iconfont icon-shezhi"></i></n-button>
     </span>
   </div>
 
@@ -34,12 +33,28 @@ export default defineComponent({
   components: { Menu },
   setup(){
     const menu = ref(false)
-    const logout = () => {
-      localStorage.clear()
-      location.reload()
+
+    const login = () => {
+      router.push('login')
     }
+
+    const logout = () => {
+      $dialog.warning({
+        title: 'Logout',
+        content: 'Are you sure you want to logout?',
+        positiveText: 'Logout',
+        negativeText: 'Cancel',
+        onPositiveClick: () => {
+          localStorage.clear()
+          location.reload()
+        }
+      })
+    }
+
     return {
+      login,
       logout,
+      hasToken: localStorage.getItem('token'),
       menu
     }
   }

@@ -11,8 +11,7 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
-    config.headers.token = JSON.parse(token)?.token
-    config.headers.Authorization = 'Bearer ' + JSON.parse(token)?.token
+    config.headers.authorization = token
   }
   return config
 }, error => {
@@ -28,9 +27,9 @@ instance.interceptors.response.use((response) => {
     else res = response.data
   }
   if(res.error) $message.error(res.error)
-
   return res
 }, error => {
+  console.log(error)
   // 错误返回
   let msg = error.response.data.error
   $message.error(msg)
@@ -46,7 +45,7 @@ export default {
     return instance.get('/data?' + query)
   },
   post: data => instance.post('/data', data ),
-  login: data => instance.login('/login', data ),
-  edit: data => instance.update('/data', data ),
+  login: data => instance.post('/login', data ),
+  edit: (id, data) => instance.update('/data/' + id, data ),
   delete: id => instance.delete('/data/' + id )
 }

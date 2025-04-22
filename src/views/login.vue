@@ -20,7 +20,7 @@
 <script>
     import { onMounted, reactive, ref, toRefs} from 'vue'
     import { useRouter } from 'vue-router'
-    import { user } from '@/service/api'
+    import request from '@/service/index.js'
     export default {
         setup(){
             const required = { required: true, message: "Plase input required field", trigger: "blur" }
@@ -35,19 +35,12 @@
             const login = async () => {
                 if(!state.params.username ||!state.params.password) return $message.error('Password or username is false')
                 state.logining = true
-                // 请自行实现登录
-                // let res = await user.login(state.params)
-                // if(res.code == 200){
-                //     localStorage.setItem('token', JSON.stringify(res.data))
-                //     router.push('/')
-                // }else{
-                //   $message.error(res.msg)
-                // }
-
-                // 模拟登录
-                localStorage.setItem('token', JSON.stringify({ username: 'chaoxl', token: "4554545", alias: "chaoxl" }))
-                router.push('/')
-
+                let res = await request.login(state.params)
+                console.log(res);
+                if(res.success){
+                    localStorage.setItem('token', res.token)
+                    router.push('/')
+                }
                 state.logining = false
             }
 

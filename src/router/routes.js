@@ -16,6 +16,15 @@ export default [
     },
     component: () => import('@/views/index.vue'),
     children: [
+      {
+        path: '/',
+        name: 'fooof',
+        meta: {
+          title: "fooof",
+          auth: false
+        },
+        component: () => import('@/views/scene.vue'),
+      }
     ]
   }
 ]
