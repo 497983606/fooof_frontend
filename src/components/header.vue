@@ -15,6 +15,7 @@
   style="width: 100%; max-width: 400px"
   preset="card"
   title="Menu"
+  :mask-closable="false"
   size="small"
   :bordered="false"
   >

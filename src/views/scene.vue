@@ -66,6 +66,7 @@ const getData = async (params) => {
     state.info.info = JSON.parse(state.info.info)
     state.info.info.date = dateFormat( 'YYYY-mm-dd', new Date(state.info.info.date))
     state.uuid = state.info.uuid
+    document.title = state.info.info.title + '-FoooF-Look China'
     router.replace({ query: { uuid: state.info.uuid } })
     initScene()
   } 
