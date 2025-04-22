@@ -21,7 +21,7 @@
       </div>
       <div class="list">
         <p v-for="i in state.data.data">
-          {{  i.url }}
+          {{  JSON.parse(i.info).title }}
           <span class="btns">
             <i class="iconfont icon-delete" v-if="hasToken" @click="del(i)"></i>
             <i class="iconfont icon-highlighter" v-if="hasToken" @click="edit(i)"></i>

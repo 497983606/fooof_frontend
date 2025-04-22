@@ -46,6 +46,6 @@ export default {
   },
   post: data => instance.post('/data', data ),
   login: data => instance.post('/login', data ),
-  edit: (id, data) => instance.update('/data/' + id, data ),
+  edit: (id, data) => instance.put('/data/' + id, data ),
   delete: id => instance.delete('/data/' + id )
 }

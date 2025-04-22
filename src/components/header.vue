@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import router from '@/router/index.js'
 import Menu from './menu.vue'
 
@@ -50,6 +50,10 @@ export default defineComponent({
         }
       })
     }
+
+    watch(() => router.currentRoute.value, () => {
+      menu.value = false
+    }, {  deep: true })
 
     return {
       login,
