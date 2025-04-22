@@ -70,7 +70,7 @@ const getData = async (params) => {
 }
 
 watch(() => route.query, (val) => {
-  if( val.uuid == state.uuid ) return
+  if( val.uuid && val.uuid == state.uuid ) return
   if( val.uuid ) getData({ uuid: val.uuid })
   else getData({ pageSize: 1, page: 1 })
 }, { immediate: true })
