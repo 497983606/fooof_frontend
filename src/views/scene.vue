@@ -130,6 +130,7 @@ const initScene = () => {
 .scene{
   width: 100%;
   height: 100%;
+  position: relative;
 }
 .center{
   text-align: center;
