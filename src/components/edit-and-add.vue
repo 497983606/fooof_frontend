@@ -93,14 +93,15 @@ export default {
           coordinates: ""
         }
       }
-      state.show = true
     }, { deep: true })
 
     const submit = async () => {
+      if(!state.form.url || !state.form.info.title || !state.form.location) return $message.error('Please input required infomation！')
       state.loading = true
       state.form.location = state.locationArray.join(',')
       state.form.info = JSON.stringify(state.form.info)  
       if(state.form.uuid){
+        state.form.location = state.form.location || props.form.location
         request.edit(state.form.uuid, state.form).then(res => {
           if(res.success) {
             emit('ok')

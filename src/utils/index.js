@@ -21,6 +21,17 @@ export const dateFormat = (fmt, date) => {
     return '-';
   }
 }
+
+export function debounce(fn, delay = 300) {
+  let timer = null
+  return function (...args) {
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn.apply(this, args)
+    }, delay)
+  }
+}
+
 /**
 * 图片转base64
 */
@@ -47,19 +58,6 @@ export const toBase64 = (file) => {
   }
 }
 
-/**
- * 防抖
- * @param {Function} 执行函数
- * @param {Number} delay 延时ms
- */
-let _debounceTimeout = undefined,
-  _throttleRunning = false
-export const debounce = (fn, delay = 500) => {
-  clearTimeout(_debounceTimeout)
-  _debounceTimeout = setTimeout(() => {
-    fn()
-  }, delay)
-}
 /**
  * 节流
  * @param {Function} 执行函数

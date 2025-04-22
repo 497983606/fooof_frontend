@@ -34,17 +34,18 @@
         </div>
       </div>
     </n-spin>
-    <EditAndAdd :form="state.checkItem" @ok="getData" />
+    <EditAndAdd ref="editAndAddRef" :form="state.checkItem" @ok="getData" />
   </div>
 </template>
 
 <script setup>
 import request from '@/service/'
-import { reactive, watch, defineEmits} from 'vue'
+import { reactive, ref, watch, defineEmits} from 'vue'
 import { pcTextArr } from "element-china-area-data";
 import EditAndAdd from './edit-and-add.vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+const editAndAddRef = ref(null)
 const state = reactive({
   data: {},
   options: [{ label: 'All', value: 'All' }, ...pcTextArr],
@@ -88,11 +89,17 @@ const del = (i) => {
     })
 }
 
-const edit = (i) => state.checkItem = i
+const edit = (i) => {
+  editAndAddRef.value.state.show = true
+  state.checkItem = i
+}
 
-const add = () => state.checkItem = {}
+const add = () => {
+  editAndAddRef.value.state.show = true
+  state.checkItem = {}
+}
 
-const go = (i) => router.push('/?=' + i.uuid)
+const go = (i) => router.push('/?uuid=' + i.uuid)
 
 watch(() => state.city, () => {
   state.page = 1
