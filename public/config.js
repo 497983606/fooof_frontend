@@ -1,3 +1,3 @@
 window.sys_con = {
-  baseURL: 'https://api.fooof.top/api/',
+  baseURL: 'https://nas.taiwu.tech:9003/api/',
 }

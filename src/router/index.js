@@ -15,7 +15,6 @@ router.beforeEach(async (to, from, next) => {
     if (userinfo && to.path == '/login') next({ path: '/' })
     else next()
   }
-  window.document.title = to.meta.title + '-Look China'
 })
 
 export default router
