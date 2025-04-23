@@ -18,20 +18,24 @@
   size="small"
   :bordered="false"
   >
-  <div class="scene_info">
-    <p>{{ state.info?.info.description }}</p>
-    <p><span>日期：</span>{{ state.info?.info.date }}</p>
-    <p><span>作者：</span>{{ state.info?.info.author }}</p>
-    <p><span>城市：</span>{{ state.info?.location }}</p>
-    <p><span>名称：</span>{{ state.info?.info.title }}</p>
-  </div>
-  <div class="center" style="margin-top: 20px"> FOOOF.TOP <a href="https://wangyesheji.cn/about"> Link Me</a></div>
+    <div class="scene_info">
+      <p>{{ state.info?.info.description }}</p>
+      <p><span>日期：</span>{{ state.info?.info.date }}</p>
+      <p><span>作者：</span>{{ state.info?.info.author }}</p>
+      <p><span>城市：</span>{{ state.info?.location }}</p>
+      <p><span>名称：</span>{{ state.info?.info.title }}</p>
+    </div>
+    <div class="center" style="margin-top: 20px"> FOOOF.TOP <a href="https://wangyesheji.cn/about"> Link Me</a></div>
   </n-modal>
+  <div style="width: 100px; background: #fff; height: 100px; position:absolute; bottom: 0; left: 0">
+    {{ state.geolocation }}
+  </div>
 </template>
 
 <script setup>
 import lib from './scene.js'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { LocationChecker } from './location'
+import { reactive, ref, watch } from 'vue'
 import sunny from '@zkqh/c3d/assets/sunny.hdr?url'
 import { useRoute, useRouter} from 'vue-router'
 import { debounce, dateFormat } from '@/utils/index.js'
@@ -43,6 +47,7 @@ const state = reactive({
   uuid: null,
   measure: false,
   show: false,
+  geolocation: {}
 })
 
 const router = useRouter()
@@ -78,7 +83,7 @@ watch(() => route.query, (val) => {
   else getData({ pageSize: 1, page: 1 })
 }, { immediate: true })
 
-const initScene = () => {
+const initScene = async () => {
   const { camera: _camera, control: _control } = route.query
   if( scene ) {
     scene.destroy()
@@ -98,10 +103,25 @@ const initScene = () => {
       target: _control ? _control.split(',') : control.length? control : [0, 0, 0],
       maxDistance: 150000,
       minDistance: 0.1,
-      maxPolarAngle: 180
+      maxPolarAngle: 80
     }
   })
   scene.load( state.info.url )
+  const locationChecker = new LocationChecker()
+   // 初始化
+  await locationChecker.initialize(state.info.url);
+  // 获取单次位置
+  state.geolocation = await locationChecker.checkUserPosition()
+  // 持续监听位置
+  const watchId = locationChecker.watchPosition(
+      (result) => {
+          state.geolocation = result
+      },
+      (error) => {
+          console.error('监听位置错误:', error);
+      }
+  );
+  
   scene.controlChange = debounce((e) => {
     if(!route.query.uuid) return
     const query = { 
