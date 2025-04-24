@@ -4,9 +4,9 @@
       <img src="../assets/img/fooof.svg" />
     </span>
     <span class="user">
-      <n-button size="small" style="margin-right: 10px"  @click="menu = true"> <i class="iconfont icon-shitujuzhen"></i></n-button>
-      <n-button size="small" v-if="hasToken" @click="logout"> <i class="iconfont icon-close"></i></n-button>
-      <n-button size="small" v-else @click="login"> <i class="iconfont icon-shezhi"></i></n-button>
+      <n-button size="small" style="margin-right: 10px"  @click="menu = true"> <i class="fooof icon-liebiao"></i></n-button>
+      <n-button size="small" v-if="hasToken" @click="logout"> <i class="fooof icon-tuichu"></i></n-button>
+      <n-button size="small" v-else @click="login"> <i class="fooof icon-banshou"></i></n-button>
     </span>
   </div>
 

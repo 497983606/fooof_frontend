@@ -2,13 +2,14 @@
   <div class="scene" ref="sceneRef"></div>
   <div class="right_btns">
     <n-button @click="openMeasure" type="primary">
-      <i class="iconfont icon-bianjibiaoge" v-if="!state.measure"></i>
-      <i class="iconfont icon-delete" v-else></i>
+      <i class="fooof icon-juliceliang" v-if="!state.measure"></i>
+      <i class="fooof icon-mti-qingchu" v-else></i>
     </n-button>
-    <n-button @click="closeMeasure" v-if="state.measure" type="primary" >
-      <i class="iconfont icon-square-remove"></i>
+    <n-button @click="closeMeasure" v-if="state.measure" type="error" >
+      <i class="fooof icon-guanbi"></i>
     </n-button>
-    <n-button type="success" @click="state.show = true"><i class="iconfont icon-gongzuobaogao"></i></n-button>
+    <n-button type="success" @click="state.show = true"><i class="fooof icon-tushu"></i></n-button>
+    <n-button type="info" :disabled="state.loadingGeo" @click="getlocation()"><i class="fooof icon-dingwei"></i></n-button>
   </div>
   <n-modal
   v-model:show="state.show"
@@ -20,15 +21,22 @@
   >
     <div class="scene_info">
       <p>{{ state.info?.info.description }}</p>
-      <p><span>日期：</span>{{ state.info?.info.date }}</p>
-      <p><span>作者：</span>{{ state.info?.info.author }}</p>
-      <p><span>城市：</span>{{ state.info?.location }}</p>
-      <p><span>名称：</span>{{ state.info?.info.title }}</p>
+      <p><span>Date：</span>{{ state.info?.info.date }}</p>
+      <p><span>Author：</span>{{ state.info?.info.author }}</p>
+      <p><span>City：</span>{{ state.info?.location }}</p>
+      <p><span>Title：</span>{{ state.info?.info.title }}</p>
     </div>
     <div class="center" style="margin-top: 20px"> FOOOF.TOP <a href="https://wangyesheji.cn/about"> Link Me</a></div>
   </n-modal>
-  <div style="width: 100px; background: #fff; height: 100px; position:absolute; bottom: 0; left: 0">
-    {{ state.geolocation }}
+  <div style="width: 300px; background: #fff; text-align: center; position:absolute; bottom: 0; left: 0">
+    <span v-if="state.geolocation.position">
+      {{ state.geolocation.position.latitude }}, 
+      {{  state.geolocation.position.longitude }}, 
+      {{  state.geolocation.position.altitude }}
+      {{ state.geolocation.relativePosition.map(i => i.toFixed(2)).join() }}
+      {{ state.geolocation.isInBoundingBox }}
+    </span>
+    <span v-else> {{ state.loadingGeo ? "定位中..." : "未开启定位" }}</span>
   </div>
 </template>
 
@@ -41,13 +49,14 @@ import { useRoute, useRouter} from 'vue-router'
 import { debounce, dateFormat } from '@/utils/index.js'
 import request from '@/service/index.js'
 const sceneRef = ref(null)
-let scene = null, timer = null
+let scene = null, locationChecker = null, watchId = null
 const state = reactive({
   info: {},
   uuid: null,
   measure: false,
   show: false,
-  geolocation: {}
+  geolocation: {},
+  loadingGeo: false
 })
 
 const router = useRouter()
@@ -83,6 +92,48 @@ watch(() => route.query, (val) => {
   else getData({ pageSize: 1, page: 1 })
 }, { immediate: true })
 
+const getlocation = async () => {
+  state.loadingGeo = true
+  if(state.geolocation.position){
+    if(watchId) locationChecker.stopWatching(watchId)
+    locationChecker = null
+    watchId = null
+    state.geolocation = {}
+    state.loadingGeo = false
+    return false
+  }
+  locationChecker = new LocationChecker()
+  try{
+    // 初始化
+    await locationChecker.initialize(state.info.url);
+    // 获取单次位置
+    state.geolocation = await locationChecker.checkUserPosition()
+  }catch(e){
+    $message.error(e);
+    state.loadingGeo = false
+    return false 
+  }
+  // 持续监听位置
+  watchId = locationChecker.watchPosition(
+      (result) => {
+          state.geolocation = result
+      },
+      (error) => {
+          $message.error(error);
+      }
+  )
+  state.loadingGeo = false
+}
+
+watch(() => state.geolocation.position, (val) => {
+  if(val){
+    const { relativePosition } = state.geolocation
+    scene.setMe(relativePosition[0], relativePosition[1])
+  }else{
+    scene.removeMe()
+  }
+})
+
 const initScene = async () => {
   const { camera: _camera, control: _control } = route.query
   if( scene ) {
@@ -107,20 +158,6 @@ const initScene = async () => {
     }
   })
   scene.load( state.info.url )
-  const locationChecker = new LocationChecker()
-   // 初始化
-  await locationChecker.initialize(state.info.url);
-  // 获取单次位置
-  state.geolocation = await locationChecker.checkUserPosition()
-  // 持续监听位置
-  const watchId = locationChecker.watchPosition(
-      (result) => {
-          state.geolocation = result
-      },
-      (error) => {
-          console.error('监听位置错误:', error);
-      }
-  );
   
   scene.controlChange = debounce((e) => {
     if(!route.query.uuid) return
@@ -144,7 +181,7 @@ const initScene = async () => {
   z-index: 1000;
   .n-button{
     display: block;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 }
 

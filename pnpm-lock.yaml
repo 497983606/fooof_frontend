@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@zkqh/c3d':
-        specifier: ^0.1.3
-        version: 0.1.3
+        specifier: ^0.1.4
+        version: 0.1.4
       axios:
         specifier: ^1.3.4
         version: 1.7.7
@@ -363,8 +363,8 @@ packages:
   '@zkqh/c-three-tile@0.10.31':
     resolution: {integrity: sha512-zlsbF5q0mhHmzkvxTW0ptyT7SyEOaoSCvibW45bPDfvVE+w5QhjRCdkFbi/XedK5ucwepErxmqUkdbgua4kS/g==}
 
-  '@zkqh/c3d@0.1.3':
-    resolution: {integrity: sha512-6elxISwh8i9gPeJ+CZORvgkv84jlB8xJCaBrmcNIbK39aqHJCnMJGCRrkYLogvtEVHwx8d6kQKeokppUCTAVhA==}
+  '@zkqh/c3d@0.1.4':
+    resolution: {integrity: sha512-/F6I+Hzq5/whBiua4x+J7BEToa1sBM69E7Ks5IsZ5MkqusIDYKCgvWLL6GP3cYRo6bfITt3pAQ0uqitVfoDt2Q==}
 
   acorn-import-attributes@1.9.5:
     resolution: {integrity: sha512-n02Vykv5uA3eHGM/Z2dQrcD56kL8TyDb2p1+0P83PClMnC/nc+anbQRhIOWnSq4Ke/KvDPrY3C9hDtC/A3eHnQ==}
@@ -1293,7 +1293,7 @@ snapshots:
     dependencies:
       three: 0.165.0
 
-  '@zkqh/c3d@0.1.3':
+  '@zkqh/c3d@0.1.4':
     dependencies:
       '@tweenjs/tween.js': 25.0.0
       '@types/three': 0.170.0
