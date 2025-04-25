@@ -9,7 +9,6 @@
       <n-button size="small" v-else @click="login"> <i class="fooof icon-banshou"></i></n-button>
     </span>
   </div>
-
   <n-modal
   v-model:show="menu"
   style="width: 100%; max-width: 400px"
@@ -19,7 +18,7 @@
   size="small"
   :bordered="false"
   >
-    <Menu @close="menu = false"/>
+    <Menu/>
   </n-modal>
 
 </template>
@@ -27,6 +26,7 @@
 <script>
 import { defineComponent, ref, watch } from 'vue'
 import router from '@/router/index.js'
+import { useRoute } from 'vue-router'
 import Menu from './menu.vue'
 
 export default defineComponent({
@@ -51,10 +51,10 @@ export default defineComponent({
         }
       })
     }
-
-    watch(() => router.currentRoute.value, () => {
+    const route = useRoute()
+    watch(() => route.query.uuid, () => {
       menu.value = false
-    }, {  deep: true })
+    })
 
     return {
       login,

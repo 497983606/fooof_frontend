@@ -16,20 +16,20 @@
         >
         </n-select>
         <n-button style="margin-left: 10px;" v-if="hasToken" @click="add">
-          <i class="iconfont icon-add"></i>
+          <i class="fooof icon-add"></i>
         </n-button>
       </div>
       <div class="list">
         <p v-for="i in state.data.data">
           {{  JSON.parse(i.info).title }}
           <span class="btns">
-            <i class="iconfont icon-delete" v-if="hasToken" @click="del(i)"></i>
-            <i class="iconfont icon-highlighter" v-if="hasToken" @click="edit(i)"></i>
-            <i class="iconfont icon-yueduxiao" @click="go(i)"></i>
+            <i class="fooof icon-shanchu" v-if="hasToken" @click="del(i)"></i>
+            <i class="fooof icon-bianjishuru" v-if="hasToken" @click="edit(i)"></i>
+            <i class="fooof icon-7" @click="go(i)"></i>
           </span>
         </p>
         <div class="no_data" v-if="state.data.data && !state.data.data.length">
-          <i class="iconfont icon-d3"> </i><br/>
+          <i class="fooof icon-queshengye_kongbaiye-tongyong"> </i><br/>
           No data
         </div>
       </div>
@@ -56,7 +56,6 @@ const state = reactive({
   loading: false
 })
 const emit = defineEmits(['close'])
-const close = () => emit('close')
 
 const getData = async () => {
   state.loading = true
@@ -133,7 +132,7 @@ const hasToken = localStorage.getItem('token')
       font-size: 16px;
       color: #999;
       text-align: center;
-      i.iconfont{
+      i.fooof{
         font-size: 40px;
       }
     }
@@ -145,12 +144,12 @@ const hasToken = localStorage.getItem('token')
       .btns{
         position: absolute;
         right: 0;
-        i.iconfont{
+        i.fooof{
           padding: 5px;
           background-color: #eee;
           margin-left: 10px;
           cursor: pointer;
-          &.icon-yueduxiao{
+          &.icon-7{
             background-color: #740daf;
             padding: 5px 20px;
             color: #fff;

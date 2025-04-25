@@ -11,7 +11,7 @@ export default class {
     this.c3d.addPlugin(Photog)
     this.c3d.onControlChange = this.onControlChange.bind(this)
     this.me = null
-    this.direction = new Vector3(0, 0, -1)
+    this.direction = new Vector3(0, -1, 0)
   }
 
   init(options){
@@ -21,20 +21,20 @@ export default class {
 
   removeMe(){
     if(this.me){
-      this.c3d.scene.remove(this.me)
+      this.me.visible = false
       this.me = null
     }
   }
 
-  async setMe(x, y){
-    let z = 0
-    debugger
-    const origin = new Vector3(x, y, 10000);
+  async setMe(x, z){
+    let y = 0
+    const origin = new Vector3(x, 10000, z );
     const raycaster = new Raycaster(origin, this.direction)
     const intersects = raycaster.intersectObject(this.c3d.photog.model)
-    if (intersects.length) z = intersects[0].point.z;
+    if (intersects.length) y = intersects[0].point.y;
     else return this.removeMe()
     if(this.me){
+      this.me.visible = true
       this.me.position.set(x, y, z)
     }else{
       this.me = await this.c3d.model.loadModel({
@@ -46,7 +46,7 @@ export default class {
         style: {
           color: 0xff000
         }
-      })
+      }, this.c3d.photog.model)
     }
   }
 
@@ -60,10 +60,10 @@ export default class {
       this.controlChange({ camera: [ x, y, z ], control: [ _x, _y, _z ] })
     }
   }
-  load(src){
+  load(src, height = 0){
     this.c3d.photog.init({
       src,
-      position: [0, 5, 0],
+      position: [0, height, 0],
       decoder: { },
       native: {
         preloadTilesCount: 5000

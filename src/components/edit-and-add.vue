@@ -35,6 +35,9 @@
       <n-form-item label="Date" path="info.date">
         <n-date-picker v-model:value="state.form.info.date" style="width: 100%" type="date" />
       </n-form-item>
+      <n-form-item label="Scene Height Offset" path="info.camera">
+        <n-input-number v-model:value="state.form.info.height"></n-input-number >
+      </n-form-item>
       <n-form-item label="Camera Position" path="info.camera">
         <n-input-number v-for="(i, idx) in state.form.info.camera" v-model:value="state.form.info.camera[idx]"></n-input-number >
       </n-form-item>
@@ -77,6 +80,7 @@ export default {
         state.title = 'Edit Item' 
         state.form.location = state.form.location.split(',')[1]
         state.form.info = JSON.parse(state.form.info)
+        state.form.info.height = state.form.info.height || 0
       }else{
         state.title = 'Add Item'
         state.form = {
@@ -87,7 +91,8 @@ export default {
             author: "",
             date: null,
             camera: [0, 150, 150],
-            control: [0,0,0]
+            control: [0,0,0],
+            height: 0
           },
           url: "",
           coordinates: ""

@@ -28,15 +28,12 @@
     </div>
     <div class="center" style="margin-top: 20px"> FOOOF.TOP <a href="https://wangyesheji.cn/about"> Link Me</a></div>
   </n-modal>
-  <div style="width: 300px; background: #fff; text-align: center; position:absolute; bottom: 0; left: 0">
-    <span v-if="state.geolocation.position">
-      {{ state.geolocation.position.latitude }}, 
-      {{  state.geolocation.position.longitude }}, 
-      {{  state.geolocation.position.altitude }}
-      {{ state.geolocation.relativePosition.map(i => i.toFixed(2)).join() }}
-      {{ state.geolocation.isInBoundingBox }}
-    </span>
-    <span v-else> {{ state.loadingGeo ? "定位中..." : "未开启定位" }}</span>
+  <div 
+  v-if="state.loadingGeo || (!state.locationPointInside && state.geolocation.position)" 
+  style="width: 300px; background: #f00; text-align: center; color: #fff; position:absolute; bottom: 10px; left: 10px"
+  >
+    <span> {{ state.loadingGeo ? "location..." : ''  }}</span>
+    <span v-if="!state.locationPointInside && !state.loadingGeo"> You are not at this scene </span>
   </div>
 </template>
 
@@ -56,7 +53,8 @@ const state = reactive({
   measure: false,
   show: false,
   geolocation: {},
-  loadingGeo: false
+  loadingGeo: false,
+  locationPointInside: false
 })
 
 const router = useRouter()
@@ -129,6 +127,7 @@ watch(() => state.geolocation.position, (val) => {
   if(val){
     const { relativePosition } = state.geolocation
     scene.setMe(relativePosition[0], relativePosition[1])
+    if(scene.me) state.locationPointInside = scene.me.visible
   }else{
     scene.removeMe()
   }
@@ -157,7 +156,7 @@ const initScene = async () => {
       maxPolarAngle: 80
     }
   })
-  scene.load( state.info.url )
+  scene.load( state.info.url, state.info.info.height )
   
   scene.controlChange = debounce((e) => {
     if(!route.query.uuid) return
