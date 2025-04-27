@@ -39,10 +39,20 @@ export class ModelPositionChecker {
 
   // 提取包围盒信息
   extractBoundingBox(boxData) {
-      return {
-          center: [boxData[0], boxData[1], boxData[2]],
-          halfExtents: [boxData[3], boxData[7], boxData[11]]
-      };
+    return {
+        center: [boxData[0], boxData[1], boxData[2]],
+        halfAxes: [
+            [boxData[3], boxData[4], boxData[5]],  // x轴半轴向量
+            [boxData[6], boxData[7], boxData[8]],  // y轴半轴向量
+            [boxData[9], boxData[10], boxData[11]] // z轴半轴向量
+        ],
+        // 为了兼容现有代码，保留halfExtents
+        halfExtents: [
+            Math.sqrt(boxData[3]*boxData[3] + boxData[4]*boxData[4] + boxData[5]*boxData[5]),
+            Math.sqrt(boxData[6]*boxData[6] + boxData[7]*boxData[7] + boxData[8]*boxData[8]),
+            Math.sqrt(boxData[9]*boxData[9] + boxData[10]*boxData[10] + boxData[11]*boxData[11])
+        ]
+    };
   }
 
   // 提取旋转矩阵
@@ -82,20 +92,28 @@ export class ModelPositionChecker {
 
   // 计算相对位置
   calculateRelativePosition(lat, lon, height) {
-      if (!this.transform) {
-          throw new Error('请先调用initialize方法初始化tileset数据');
-      }
+    if (!this.transform) {
+        throw new Error('请先调用initialize方法初始化tileset数据');
+    }
 
-      // 计算目标点ECEF坐标
-      const targetECEF = this.latLonHeightToECEF(lat, lon, height);
-      
-      // 计算相对偏移
-      const deltaX = targetECEF[0] - this.modelOrigin[0];
-      const deltaY = targetECEF[1] - this.modelOrigin[1];
-      const deltaZ = targetECEF[2] - this.modelOrigin[2];
-      
-      // 计算局部坐标
-      return this.multiplyMatrixVector(this.invRotationMatrix, [deltaX, deltaY, deltaZ]);
+    // 计算目标点ECEF坐标
+    const targetECEF = this.latLonHeightToECEF(lat, lon, height);
+    
+    // 计算相对偏移
+    const deltaX = targetECEF[0] - this.modelOrigin[0];
+    const deltaY = targetECEF[1] - this.modelOrigin[1];
+    const deltaZ = targetECEF[2] - this.modelOrigin[2];
+    
+    
+
+    // 计算局部坐标
+    const localCoords = this.multiplyMatrixVector(this.invRotationMatrix, [deltaX, deltaY, deltaZ]);
+    // 计算相对于BoundingBox中心的坐标
+    return [
+        localCoords[0] - this.boundingBox.center[0],
+        localCoords[1] - this.boundingBox.center[1],
+        localCoords[2] - this.boundingBox.center[2]
+    ];
   }
 
   // 检查点是否在包围盒内
@@ -105,7 +123,7 @@ export class ModelPositionChecker {
       }
 
       return point.every((coord, i) => 
-          Math.abs(coord - this.boundingBox.center[i]) <= this.boundingBox.halfExtents[i]
+          Math.abs(coord) <= this.boundingBox.halfExtents[i]
       );
   }
 

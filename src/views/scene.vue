@@ -126,9 +126,11 @@ const getlocation = async () => {
 watch(() => state.geolocation.position, (val) => {
   if(val){
     const { relativePosition } = state.geolocation
-    scene.setMe(relativePosition[0], relativePosition[1])
+    scene.setMe(relativePosition[1], relativePosition[0])
+    console.log(relativePosition)
     if(scene.me) state.locationPointInside = scene.me.visible
   }else{
+    state.locationPointInside = false
     scene.removeMe()
   }
 })

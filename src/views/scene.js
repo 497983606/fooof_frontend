@@ -11,10 +11,11 @@ export default class {
     this.c3d.addPlugin(Photog)
     this.c3d.onControlChange = this.onControlChange.bind(this)
     this.me = null
-    this.direction = new Vector3(0, -1, 0)
+    this.direction = new Vector3(0, -1, 0).normalize()
+    this.raycaster = new Raycaster()
   }
 
-  init(options){
+  async init(options){
     this.c3d.init(options)
     return this.c3d
   }
@@ -26,27 +27,31 @@ export default class {
     }
   }
 
-  async setMe(x, z){
-    let y = 0
+  async setMe(z, x){
+    let y = 0;
+    x = -1*x
+    z = -1*z
     const origin = new Vector3(x, 10000, z );
-    const raycaster = new Raycaster(origin, this.direction)
-    const intersects = raycaster.intersectObject(this.c3d.photog.model)
+    this.raycaster.set(origin, this.direction)
+    const intersects = this.raycaster.intersectObject(this.c3d.photog.model)
     if (intersects.length) y = intersects[0].point.y;
     else return this.removeMe()
+    
     if(this.me){
       this.me.visible = true
       this.me.position.set(x, y, z)
     }else{
       this.me = await this.c3d.model.loadModel({
         type: "html",
+        position: [x, y, z],
         shape: {
           css3d: false,
-          el: `<span style='padding: 2px 5px; background: #00f; color: #fff; font-size: 14px'>  I'm Here </span>`
+          el: `<span style='padding: 2px 5px; background: #00f; color: #fff; font-size: 14px'>  You </span>`
         },
         style: {
           color: 0xff000
         }
-      }, this.c3d.photog.model)
+      })
     }
   }
 
