@@ -100,10 +100,10 @@ const getlocation = async () => {
     state.loadingGeo = false
     return false
   }
-  locationChecker = new LocationChecker()
+  const tileset = scene.c3d.photog.runtime.getTileset()
+  locationChecker = new LocationChecker(tileset.cartographicCenter)
+  
   try{
-    // 初始化
-    await locationChecker.initialize(state.info.url);
     // 获取单次位置
     state.geolocation = await locationChecker.checkUserPosition()
   }catch(e){
@@ -117,17 +117,15 @@ const getlocation = async () => {
           state.geolocation = result
       },
       (error) => {
-          $message.error(error);
+        console.log(error?.message || '获取位置失败')
       }
   )
   state.loadingGeo = false
 }
 
-watch(() => state.geolocation.position, (val) => {
+watch(() => state.geolocation.relativePosition, (val) => {
   if(val){
-    const { relativePosition } = state.geolocation
-    scene.setMe(relativePosition[1], relativePosition[0])
-    console.log(relativePosition)
+    scene.setMe(...val)
     if(scene.me) state.locationPointInside = scene.me.visible
   }else{
     state.locationPointInside = false

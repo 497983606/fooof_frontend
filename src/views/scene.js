@@ -27,10 +27,8 @@ export default class {
     }
   }
 
-  async setMe(z, x){
+  async setMe(x, z){
     let y = 0;
-    x = -1*x
-    z = -1*z
     const origin = new Vector3(x, 10000, z );
     this.raycaster.set(origin, this.direction)
     const intersects = this.raycaster.intersectObject(this.c3d.photog.model)
